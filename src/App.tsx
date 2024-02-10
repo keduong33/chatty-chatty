@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { LanguageSelector } from "./components/LanguageSelector";
 import { ThemeProvider } from "./components/theme-provider";
 import { Button } from "./components/ui/button";
 
@@ -8,14 +7,15 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <h1 className="text-xl font-bold text-center">
-        Chatty Chatty & Learn Langy
-      </h1>
-      <LanguageSelector
-        selectedLanguage={selectedLanguage}
-        setSelectedLanguage={setSelectedLanguage}
-      />
-      <Button>Test</Button>
+      <main className="p-5 flex flex-col">
+        <h1 className="text-xl font-bold text-center">
+          Chatty Chatty to Learn Langy
+        </h1>
+
+        <Button className="w-fit self-center mt-5">
+          Start a new conversation
+        </Button>
+      </main>
     </ThemeProvider>
   );
 }
