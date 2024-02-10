@@ -26,8 +26,8 @@ export function LanguageSelector({
 
   return (
     <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a fruit" />
+      <SelectTrigger>
+        <SelectValue placeholder="" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
