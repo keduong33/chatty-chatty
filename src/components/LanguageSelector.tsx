@@ -3,25 +3,39 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
 
-export function LanguageSelector() {
+type LanguageSelectorProps = {
+  setSelectedLanguage: (language: string) => void;
+  selectedLanguage: string;
+};
+
+export enum SupportedLanguages {
+  English = "English",
+  German = "German",
+  Vietnamese = "Vietnamese",
+}
+
+export function LanguageSelector({
+  setSelectedLanguage,
+  selectedLanguage,
+}: LanguageSelectorProps) {
+  const supportedLanguages = Object.values(SupportedLanguages);
+
   return (
-    <Select>
+    <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select a fruit" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Fruits</SelectLabel>
-          <SelectItem value="apple">Apple</SelectItem>
-          <SelectItem value="banana">Banana</SelectItem>
-          <SelectItem value="blueberry">Blueberry</SelectItem>
-          <SelectItem value="grapes">Grapes</SelectItem>
-          <SelectItem value="pineapple">Pineapple</SelectItem>
+          {supportedLanguages.map((language) => (
+            <SelectItem key={language} value={language}>
+              {language}
+            </SelectItem>
+          ))}
         </SelectGroup>
       </SelectContent>
     </Select>
