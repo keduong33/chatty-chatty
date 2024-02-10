@@ -8,7 +8,9 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+      <h1 className="text-xl font-bold text-center">
+        Chatty Chatty & Learn Langy
+      </h1>
       <LanguageSelector
         selectedLanguage={selectedLanguage}
         setSelectedLanguage={setSelectedLanguage}
