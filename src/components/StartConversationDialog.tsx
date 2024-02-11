@@ -55,7 +55,7 @@ export function StartConversationDialog() {
               <Controller
                 control={control}
                 name="KnownLanguage"
-                render={({ field: { value, onBlur, onChange } }) => (
+                render={({ field: { value, onChange } }) => (
                   <LanguageSelector
                     setSelectedLanguage={onChange}
                     selectedLanguage={value}
@@ -80,7 +80,7 @@ export function StartConversationDialog() {
               <Controller
                 control={control}
                 name="TargetLanguage"
-                render={({ field: { value, onBlur, onChange } }) => (
+                render={({ field: { value, onChange } }) => (
                   <LanguageSelector
                     setSelectedLanguage={onChange}
                     selectedLanguage={value}
@@ -102,7 +102,9 @@ export function StartConversationDialog() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Let's go</Button>
+            <Button type="submit" isLoading={mutation.isPending}>
+              Let's go
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
