@@ -9,22 +9,28 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { Controller, useForm } from "react-hook-form";
-import { LanguageSelector, SupportedLanguages } from "./LanguageSelector";
-
-type StartConversationInputs = {
-  TargetLanguage: SupportedLanguages;
-  KnownLanguage: SupportedLanguages;
-};
+import { NewConversationInputs } from "../../types/types";
+import { LanguageSelector } from "./LanguageSelector";
 
 export function StartConversationDialog() {
   const {
-    register,
     handleSubmit,
-    watch,
     control,
     formState: { errors },
-  } = useForm<StartConversationInputs>();
+  } = useForm<NewConversationInputs>();
+
+  const mutation = useMutation({
+    mutationFn: (info: NewConversationInputs) => {
+      return axios.post("/new-conversation", info);
+    },
+  });
+
+  const onSubmit = handleSubmit((input) => {
+    mutation.mutate(input);
+  });
 
   return (
     <Dialog>
@@ -35,7 +41,7 @@ export function StartConversationDialog() {
       </DialogTrigger>
 
       <DialogContent className="max-w-[300px]">
-        <form onSubmit={handleSubmit((data) => console.log(data))}>
+        <form onSubmit={onSubmit}>
           <DialogHeader>
             <DialogTitle>Let's Chatty Chatty</DialogTitle>
             <DialogDescription>

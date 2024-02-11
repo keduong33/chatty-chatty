@@ -1,3 +1,4 @@
+import { SupportedLanguages } from "../../types/types";
 import {
   Select,
   SelectContent,
@@ -11,12 +12,6 @@ type LanguageSelectorProps = {
   setSelectedLanguage: (language: string) => void;
   selectedLanguage: string;
 };
-
-export enum SupportedLanguages {
-  English = "English",
-  German = "German",
-  Vietnamese = "Vietnamese",
-}
 
 export function LanguageSelector({
   setSelectedLanguage,
