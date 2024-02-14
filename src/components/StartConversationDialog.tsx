@@ -12,32 +12,47 @@ import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Controller, useForm } from "react-hook-form";
-import { NewConversationInputs } from "../../types/types";
+import { ConversationData } from "../../types/types";
+import { useConversation } from "../lib/conversation.store";
+import { convertConversationResponse } from "../lib/utils";
 import { LanguageSelector } from "./LanguageSelector";
+
+const initialTextTemplate = "Hello, how are you doing?";
 
 export function StartConversationDialog() {
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<NewConversationInputs>();
+  } = useForm<ConversationData>();
 
   const mutation = useMutation({
-    mutationFn: (info: NewConversationInputs) => {
-      return axios.post("/new-conversation", info);
+    mutationFn: async (input: ConversationData) =>
+      await axios.post<ConversationData["ChatHistory"]>("/chat", input),
+
+    onSuccess(response) {
+      const conversation = convertConversationResponse(response.data);
+      useConversation.setState({ ...conversation });
+    },
+    retry: 1,
+    onError(error) {
+      console.error(error);
     },
   });
 
-  const onSubmit = handleSubmit((input) => {
-    mutation.mutate(input);
+  const onSubmit = handleSubmit(({ KnownLanguage, TargetLanguage }) => {
+    mutation.mutate({
+      KnownLanguage,
+      TargetLanguage,
+      UserText: initialTextTemplate,
+      ChatHistory: undefined,
+    });
   });
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-fit self-center mt-5">
-          Start a new Conversation
-        </Button>
+        <Button className="w-fit self-center">Start a new Conversation</Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-[300px]">
