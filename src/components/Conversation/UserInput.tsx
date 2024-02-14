@@ -91,7 +91,7 @@ function UserInput() {
 
   return (
     <form
-      className={`flex w-full justify-between space-x-2 ${
+      className={`flex w-full justify-between space-x-2 items-center ${
         isTranscribing && "opacity-40 pointer-events-none"
       }`}
       onSubmit={sendTextToAi}

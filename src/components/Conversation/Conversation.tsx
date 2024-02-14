@@ -10,8 +10,8 @@ function Conversation() {
   ]);
 
   return (
-    <div className="rounded-lg border bg-card text-card-foreground shadow-sm  ">
-      <div className="p-3 space-y-3 pb-6">
+    <div className="rounded-lg border bg-card text-card-foreground shadow-sm h-full flex flex-col justify-between">
+      <div className="p-3 space-y-3 pb-6 overflow-y-auto">
         {userHistory.map((text, i) => (
           <>
             <UserChatBubble text={text} key={`user #${i}`} />
