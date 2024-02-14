@@ -4,7 +4,9 @@ export enum SupportedLanguages {
   Vietnamese = "Vietnamese",
 }
 
-export type NewConversationInputs = {
+export type ConversationData = {
+  UserText: string;
   TargetLanguage: SupportedLanguages;
   KnownLanguage: SupportedLanguages;
+  ChatHistory: [userText: string, botText: string][] | undefined;
 };
