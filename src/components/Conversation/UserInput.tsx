@@ -21,9 +21,12 @@ function UserInput() {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const conversationState = useConversation((state) => state);
 
+  const [isSendingText, setIsSendingText] = useState(false);
+
   const chat = useChat();
 
   const sendTextToAi = handleSubmit(({ userText }) => {
+    setIsSendingText(true);
     chat.mutate({ ...conversationState, userText });
   });
 
@@ -36,6 +39,9 @@ function UserInput() {
         aiHistory: chatHistory.aiHistory,
       });
     }
+
+    if (chat.status === "error" || chat.status === "success")
+      setIsSendingText(false);
   }, [chat.status]);
 
   const sendSpeechToAi = useMutation({
@@ -123,7 +129,12 @@ function UserInput() {
       )}
 
       {!isRecording && (
-        <Button type="submit" size="icon" variant="ghost">
+        <Button
+          type="submit"
+          size="icon"
+          variant="ghost"
+          isLoading={isSendingText}
+        >
           <SendIcon className="h-4 w-4 text-primary" />
         </Button>
       )}
