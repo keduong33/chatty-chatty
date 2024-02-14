@@ -9,12 +9,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ConversationData } from "../../types/types";
-import { useConversation } from "../lib/conversation.store";
-import { convertConversationResponse } from "../lib/utils";
+
+import { ConversationInputs } from "../../types/types";
+import {
+  initialConversation,
+  useConversation,
+} from "../lib/conversation.store";
+import useChat from "./Conversation/useChat";
 import { LanguageSelector } from "./LanguageSelector";
 
 const initialTextTemplate = "Hello, how are you doing?";
@@ -24,39 +27,49 @@ export function StartConversationDialog() {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<ConversationData>();
+  } = useForm<ConversationInputs>();
 
-  const mutation = useMutation({
-    mutationFn: async (input: ConversationData) =>
-      await axios.post<ConversationData["ChatHistory"]>("/chat", input),
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-    onSuccess(response) {
-      const conversation = convertConversationResponse(response.data);
-      useConversation.setState({ ...conversation });
-    },
-    retry: 1,
-    onError(error) {
-      console.error(error);
-    },
-  });
+  const chat = useChat();
 
-  const onSubmit = handleSubmit(({ KnownLanguage, TargetLanguage }) => {
-    mutation.mutate({
-      KnownLanguage,
-      TargetLanguage,
-      UserText: initialTextTemplate,
-      ChatHistory: undefined,
-    });
-  });
+  const startNewConversation = handleSubmit(
+    ({ knownLanguage, targetLanguage }) => {
+      useConversation.setState({
+        ...initialConversation,
+        knownLanguage,
+        targetLanguage,
+      });
+
+      chat.mutate({
+        knownLanguage,
+        targetLanguage,
+        userText: initialTextTemplate,
+        userHistory: [],
+        aiHistory: [],
+      });
+    }
+  );
+
+  useEffect(() => {
+    if (chat.status == "success") {
+      const chatHistory = chat.data;
+      setDialogOpen(false);
+      useConversation.setState({
+        userHistory: chatHistory.userHistory,
+        aiHistory: chatHistory.aiHistory,
+      });
+    }
+  }, [chat.status]);
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button className="w-fit self-center">Start a new Conversation</Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-[300px]">
-        <form onSubmit={onSubmit}>
+        <form onSubmit={startNewConversation}>
           <DialogHeader>
             <DialogTitle>Let's Chatty Chatty</DialogTitle>
             <DialogDescription>
@@ -69,7 +82,7 @@ export function StartConversationDialog() {
               <Label>Language You Know</Label>
               <Controller
                 control={control}
-                name="KnownLanguage"
+                name="knownLanguage"
                 render={({ field: { value, onChange } }) => (
                   <LanguageSelector
                     setSelectedLanguage={onChange}
@@ -82,7 +95,7 @@ export function StartConversationDialog() {
               />
               <p
                 className={`${
-                  !errors.KnownLanguage
+                  !errors.knownLanguage
                     ? "text-transparent"
                     : "text-destructive"
                 }`}
@@ -94,7 +107,7 @@ export function StartConversationDialog() {
               <Label>Language to Learn</Label>
               <Controller
                 control={control}
-                name="TargetLanguage"
+                name="targetLanguage"
                 render={({ field: { value, onChange } }) => (
                   <LanguageSelector
                     setSelectedLanguage={onChange}
@@ -107,7 +120,7 @@ export function StartConversationDialog() {
               />
               <p
                 className={`${
-                  !errors.TargetLanguage
+                  !errors.targetLanguage
                     ? "text-transparent"
                     : "text-destructive"
                 }`}
@@ -117,7 +130,7 @@ export function StartConversationDialog() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" isLoading={mutation.isPending}>
+            <Button type="submit" isLoading={chat.isPending}>
               Let's go
             </Button>
           </DialogFooter>

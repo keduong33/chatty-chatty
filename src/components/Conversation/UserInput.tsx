@@ -1,22 +1,42 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Check, Mic, SendIcon, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useConversation } from "../../lib/conversation.store";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import { AudioRecorder } from "./AudioRecorder/AudioRecorder";
+import useChat from "./useChat";
 
 const audioRecorder = new AudioRecorder();
 
 type ConversationInputs = {
-  UserInput: string;
+  userText: string;
 };
 
 function UserInput() {
   const { handleSubmit, setValue, register } = useForm<ConversationInputs>();
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const conversationState = useConversation((state) => state);
+
+  const chat = useChat();
+
+  const sendTextToAi = handleSubmit(({ userText }) => {
+    chat.mutate({ ...conversationState, userText });
+  });
+
+  useEffect(() => {
+    if (chat.status == "success") {
+      const chatHistory = chat.data;
+      setValue("userText", "");
+      useConversation.setState({
+        userHistory: chatHistory.userHistory,
+        aiHistory: chatHistory.aiHistory,
+      });
+    }
+  }, [chat.status]);
 
   const sendSpeechToAi = useMutation({
     mutationFn: async (speech: string) => {
@@ -26,7 +46,7 @@ function UserInput() {
     onSuccess(data) {
       setIsTranscribing(false);
       const text = data.data;
-      setValue("UserInput", text.trim());
+      setValue("userText", text.trim());
     },
     onError(error) {
       setIsTranscribing(false);
@@ -68,7 +88,7 @@ function UserInput() {
       className={`flex w-full justify-between space-x-2 ${
         isTranscribing && "opacity-40 pointer-events-none"
       }`}
-      onSubmit={handleSubmit((data) => console.log(data))}
+      onSubmit={sendTextToAi}
     >
       {!isRecording ? (
         <Button
@@ -95,10 +115,10 @@ function UserInput() {
           Recording...
         </div>
       ) : (
-        <Input
-          {...register("UserInput")}
-          placeholder={"Type or Speak"}
-          className={`flex-1 `}
+        <Textarea
+          {...register("userText")}
+          placeholder="Type or Speak"
+          className="flex-1 min-h-10"
         />
       )}
 

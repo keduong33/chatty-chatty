@@ -4,9 +4,10 @@ export enum SupportedLanguages {
   Vietnamese = "Vietnamese",
 }
 
-export type ConversationData = {
-  UserText: string;
-  TargetLanguage: SupportedLanguages;
-  KnownLanguage: SupportedLanguages;
-  ChatHistory: [userText: string, botText: string][] | undefined;
+export type ConversationInputs = {
+  userText: string;
+  targetLanguage: SupportedLanguages;
+  knownLanguage: SupportedLanguages;
+  userHistory: string[];
+  aiHistory: string[];
 };

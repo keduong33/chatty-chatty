@@ -1,7 +1,7 @@
 import { client } from "@gradio/client";
 import type { Config } from "@netlify/functions";
 import { createRequire } from "node:module";
-import { ConversationData, SupportedLanguages } from "../../types/types";
+import { ConversationInputs, SupportedLanguages } from "../../types/types";
 
 type QwenResponse = {
   type: string;
@@ -11,15 +11,26 @@ type QwenResponse = {
   fn_index: number;
 };
 
-type QwenChatData = [
+export type QwenChatData = [
   string, //get cleared when response is there
-  ConversationData["ChatHistory"],
+  [userHistory: string, aiHistory: string][],
   string
 ];
 
+const mergeHistories = (userHistory: string[], aiHistory: string[]) => {
+  return userHistory.map((chat, index) => [chat, aiHistory[index]]);
+};
+
 export default async (req: Request) => {
-  const { UserText, KnownLanguage, TargetLanguage }: ConversationData =
-    await req.json();
+  const {
+    userText,
+    knownLanguage,
+    targetLanguage,
+    userHistory,
+    aiHistory,
+  }: ConversationInputs = await req.json();
+
+  const mergedHistory = mergeHistories(userHistory, aiHistory);
 
   //Temporary fix for the @gradio/client issue
   //https://github.com/gradio-app/gradio/issues/7103
@@ -28,8 +39,8 @@ export default async (req: Request) => {
   //remove eventsource after upgrade @gradio/client
 
   if (
-    !(KnownLanguage in SupportedLanguages) ||
-    !(TargetLanguage in SupportedLanguages)
+    !(knownLanguage in SupportedLanguages) ||
+    !(targetLanguage in SupportedLanguages)
   )
     return new Response("Language is not supported", { status: 501 });
 
@@ -41,9 +52,9 @@ export default async (req: Request) => {
       }
     );
     const response = (await app.predict("/model_chat", [
-      UserText,
-      [],
-      `You only speak ${TargetLanguage}.`,
+      userText,
+      mergedHistory,
+      `You only speak ${targetLanguage}.`,
     ])) as QwenResponse;
 
     const [, chatHistory] = response.data;
