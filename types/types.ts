@@ -11,3 +11,8 @@ export type ConversationInputs = {
   userHistory: string[];
   aiHistory: string[];
 };
+
+export type ConversationHistoryResponse = {
+  userHistory: string[];
+  aiHistory: string[];
+};

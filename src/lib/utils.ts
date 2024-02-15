@@ -1,16 +1,16 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { QwenChatData } from "../../backend/functions/hf-chat.mts";
+import { ConversationHistoryResponse } from "../../types/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export const convertConversationResponse = (
-  conversation: QwenChatData["1"]
+  conversation: ConversationHistoryResponse
 ) => {
-  const userText = conversation?.map((chat) => chat[0]);
-  const responses = conversation?.map((chat) => chat[1]);
+  const userText = conversation.userHistory;
+  const responses = conversation.aiHistory;
 
   return {
     userHistory: userText ?? [],
