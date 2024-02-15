@@ -20,6 +20,7 @@ import {
 import useChat from "./Conversation/useChat";
 import { LanguageSelector } from "./LanguageSelector";
 import { TopicSelector } from "./TopicSelector";
+import { useToast } from "./ui/use-toast";
 
 export function StartConversationDialog() {
   const {
@@ -32,6 +33,8 @@ export function StartConversationDialog() {
 
   const chat = useChat();
 
+  const { toast } = useToast();
+
   const startNewConversation = handleSubmit(
     ({ knownLanguage, targetLanguage, topic }) => {
       useConversation.setState({
@@ -41,6 +44,10 @@ export function StartConversationDialog() {
       });
       if (topic === Topic.Anything || !topic) {
         setDialogOpen(false);
+        toast({
+          description: "Please start the conversation",
+          variant: "chattychatty",
+        });
       } else {
         chat.mutate({
           knownLanguage,
