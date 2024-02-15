@@ -2,6 +2,7 @@ import Conversation from "./components/Conversation/Conversation";
 import { StartConversationDialog } from "./components/StartConversationDialog";
 import { ThemeProvider } from "./components/theme-provider";
 import { badgeVariants } from "./components/ui/badge";
+import { Toaster } from "./components/ui/toaster";
 import { cn } from "./lib/utils";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <StartConversationDialog />
 
         <Conversation />
+        <Toaster />
       </main>
     </ThemeProvider>
   );

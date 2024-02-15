@@ -16,7 +16,8 @@ type ConversationInputs = {
 };
 
 function UserInput() {
-  const { handleSubmit, setValue, register } = useForm<ConversationInputs>();
+  const { handleSubmit, setValue, register, watch } =
+    useForm<ConversationInputs>();
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const conversationState = useConversation((state) => state);
@@ -122,7 +123,7 @@ function UserInput() {
         </div>
       ) : (
         <Textarea
-          {...register("userText")}
+          {...register("userText", { required: true })}
           placeholder="Type or Speak"
           className="flex-1 min-h-10"
         />
@@ -134,6 +135,7 @@ function UserInput() {
           size="icon"
           variant="ghost"
           isLoading={isSendingText}
+          disabled={!watch("userText")}
         >
           <SendIcon className="h-4 w-4 text-primary" />
         </Button>

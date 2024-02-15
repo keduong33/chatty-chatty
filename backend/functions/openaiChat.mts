@@ -32,13 +32,14 @@ export default async (req: Request) => {
     targetLanguage,
     userHistory,
     aiHistory,
+    startMessage,
   }: ConversationInputs = await req.json();
 
-  const newUserHistory = userHistory.concat([userText]);
+  userHistory.push(userText);
 
-  const mergedHistory = mergeHistories(newUserHistory, aiHistory);
+  const mergedHistory = mergeHistories(userHistory, aiHistory);
 
-  console.log(mergedHistory);
+  console.log("old chat history", mergedHistory);
 
   if (
     !(knownLanguage in SupportedLanguages) ||
@@ -50,7 +51,7 @@ export default async (req: Request) => {
     const messages: ChatCompletionMessageParam[] = [
       {
         role: "system",
-        content: `Reply friendly in ${targetLanguage}`,
+        content: `Must use ${targetLanguage} in all responses.`,
       } as ChatCompletionSystemMessageParam,
       ...mergedHistory,
     ];
@@ -66,10 +67,15 @@ export default async (req: Request) => {
     });
     const aiResponse = completion.choices[0].message.content ?? "";
     const newAiHistory = aiHistory.concat([aiResponse]);
+
+    if (startMessage) userHistory.pop();
+
     const newChatHistory: ConversationHistoryResponse = {
-      userHistory: newUserHistory,
+      userHistory: userHistory,
       aiHistory: newAiHistory,
     };
+
+    console.log("new chat history", newChatHistory);
     return new Response(JSON.stringify(newChatHistory));
   } catch (e) {
     console.log("Failed to send message to OpenAI", e);

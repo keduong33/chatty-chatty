@@ -12,15 +12,15 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { ConversationInputs } from "../../types/types";
+import { ConversationInputs, Topic } from "../../types/types";
 import {
   initialConversation,
   useConversation,
 } from "../lib/conversation.store";
 import useChat from "./Conversation/useChat";
 import { LanguageSelector } from "./LanguageSelector";
-
-const initialTextTemplate = "Hello, how are you doing?";
+import { TopicSelector } from "./TopicSelector";
+import { useToast } from "./ui/use-toast";
 
 export function StartConversationDialog() {
   const {
@@ -33,21 +33,31 @@ export function StartConversationDialog() {
 
   const chat = useChat();
 
+  const { toast } = useToast();
+
   const startNewConversation = handleSubmit(
-    ({ knownLanguage, targetLanguage }) => {
+    ({ knownLanguage, targetLanguage, topic }) => {
       useConversation.setState({
         ...initialConversation,
         knownLanguage,
         targetLanguage,
       });
-
-      chat.mutate({
-        knownLanguage,
-        targetLanguage,
-        userText: initialTextTemplate,
-        userHistory: [],
-        aiHistory: [],
-      });
+      if (topic === Topic.Anything || !topic) {
+        setDialogOpen(false);
+        toast({
+          description: "Please start the conversation",
+          variant: "chattychatty",
+        });
+      } else {
+        chat.mutate({
+          knownLanguage,
+          targetLanguage,
+          userText: `Ask 1 question about ${topic}`,
+          userHistory: [],
+          aiHistory: [],
+          startMessage: true,
+        });
+      }
     }
   );
 
@@ -77,8 +87,8 @@ export function StartConversationDialog() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-4 py-4">
-            <div className="w-full">
+          <div className="grid py-4">
+            <div className="w-full space-y-1">
               <Label>Language You Know</Label>
               <Controller
                 control={control}
@@ -103,7 +113,7 @@ export function StartConversationDialog() {
                 Please pick a language
               </p>
             </div>
-            <div className="w-full">
+            <div className="w-full space-y-1">
               <Label>Language to Learn</Label>
               <Controller
                 control={control}
@@ -127,6 +137,17 @@ export function StartConversationDialog() {
               >
                 Please pick a language
               </p>
+            </div>
+
+            <div className="w-full space-y-1">
+              <Label>Topic</Label>
+              <Controller
+                control={control}
+                name="topic"
+                render={({ field: { value, onChange } }) => (
+                  <TopicSelector setTopic={onChange} selectedTopic={value} />
+                )}
+              />
             </div>
           </div>
           <DialogFooter>

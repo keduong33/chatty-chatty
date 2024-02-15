@@ -49,18 +49,18 @@ netlify dev
 
 ## TODO
 ### Must Do
-* Add toast for some notifations
-  * Empty Input --> Form validation
+* Add toast for some notifications
+  * ~~Nudge users to send first message~~
   * Failures
+* ~~Empty Input --> Form validation~~
 * Add Bot speaking
 * Add Feedback button
 * Add Some Tests
-* Add Demo
+
 ### Optional
 * Add Persistent voice recording
 * More detailed Error Response Handling?
+* Add Demo
 
 ## References
-
-- Checkout my friend's [blog ](https://jason-siu-portfolio.vercel.app/article/chattychatty)about it
-- The previous verision of the [app](https://github.com/keduong33/ChattyChatty-old)
+- The previous version of the [app](https://github.com/keduong33/ChattyChatty-old)
