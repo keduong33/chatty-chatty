@@ -54,6 +54,8 @@ netlify dev
   * Failures
 * Add Bot speaking
 * Add Feedback button
+* Add Some Tests
+* Add Demo
 ### Optional
 * Add Persistent voice recording
 * More detailed Error Response Handling?
