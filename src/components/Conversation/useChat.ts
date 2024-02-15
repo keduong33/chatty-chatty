@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { QwenChatData } from "../../../backend/functions/chat.mts";
+import { QwenChatData } from "../../../backend/functions/hf-chat.mts";
 import { ConversationInputs } from "../../../types/types";
 import { convertConversationResponse } from "../../lib/utils";
 

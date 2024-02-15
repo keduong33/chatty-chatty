@@ -1,6 +1,5 @@
 import { client } from "@gradio/client";
 import type { Config } from "@netlify/functions";
-import { createRequire } from "node:module";
 import { ConversationInputs, SupportedLanguages } from "../../types/types";
 
 type QwenResponse = {
@@ -32,12 +31,6 @@ export default async (req: Request) => {
 
   const mergedHistory = mergeHistories(userHistory, aiHistory);
 
-  //Temporary fix for the @gradio/client issue
-  //https://github.com/gradio-app/gradio/issues/7103
-  const require = createRequire(import.meta.url);
-  global.EventSource = require("eventsource");
-  //remove eventsource after upgrade @gradio/client
-
   if (
     !(knownLanguage in SupportedLanguages) ||
     !(targetLanguage in SupportedLanguages)
@@ -67,5 +60,5 @@ export default async (req: Request) => {
 };
 
 export const config: Config = {
-  path: "/chat",
+  path: "/hf-chat",
 };

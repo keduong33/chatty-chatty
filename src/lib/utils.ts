@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { QwenChatData } from "../../backend/functions/chat.mts";
+import { QwenChatData } from "../../backend/functions/hf-chat.mts";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
