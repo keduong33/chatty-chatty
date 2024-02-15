@@ -54,7 +54,7 @@ netlify dev
   * Failures
 * ~~Empty Input --> Form validation~~
 * Add Bot speaking
-* Add Feedback button
+* ~~Add Feedback button~~
 * Add Some Tests
 
 ### Optional
