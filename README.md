@@ -1,7 +1,5 @@
 # Chatty Chatty
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/a5f8f6b4-2b0f-4bb3-924a-947655ff00a2/deploy-status)](https://app.netlify.com/sites/chattychatty/deploys)
-
 ```
 
 A Language Learning Chatbot that you can communicate through voice speech powered by ChatGPT & OpenAI - Whipser/HuggingFace models
