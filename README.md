@@ -1,9 +1,10 @@
 # Chatty Chatty
+
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a5f8f6b4-2b0f-4bb3-924a-947655ff00a2/deploy-status)](https://app.netlify.com/sites/chattychatty/deploys)
 
 ```
 
-A Language Learning Chatbot that you can communicate through voices
+A Language Learning Chatbot that you can communicate through voice speech powered by ChatGPT & OpenAI - Whipser/HuggingFace models
 
 ```
 
@@ -47,8 +48,10 @@ netlify dev
 
 [Backend](backend/README.md)
 
-## TODO
+## TODO (Discontinued)
+
 ### Must Do
+
 * Add toast for some notifications
   * ~~Nudge users to send first message~~
   * Failures
@@ -58,9 +61,11 @@ netlify dev
 * Add Some Tests
 
 ### Optional
+
 * Add Persistent voice recording
 * More detailed Error Response Handling?
-* Add Demo
+* ~~Add Demo~~
 
 ## References
+
 - The previous version of the [app](https://github.com/keduong33/ChattyChatty-old)
