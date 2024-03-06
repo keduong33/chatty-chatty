@@ -1,33 +1,30 @@
 import { Config } from "@netlify/functions";
 import axios, { AxiosError } from "axios";
 
-type abidlabsWhisperResponse = {
-  data: [
-    string // represents text string of the Textbox component
-  ];
-  duration: number; // number of seconds to run function call
-};
+function base64ToArrayBuffer(base64: string): ArrayBuffer {
+  const binaryString = atob(base64);
+  const length = binaryString.length;
+  const bytes = new Uint8Array(length);
+  for (let i = 0; i < length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
 
 export default async (req: Request) => {
-  const speech = await req.text();
+  const speech = base64ToArrayBuffer(await req.text());
+
   try {
-    const response = await axios<abidlabsWhisperResponse>(
-      "https://abidlabs-whisper.hf.space/run/predict",
+    const response = await axios(
+      "https://api-inference.huggingface.co/models/openai/whisper-small",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: JSON.stringify({
-          data: [
-            {
-              name: "audio.wav",
-              data: speech,
-            },
-          ],
-        }),
+        headers: { Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}` },
+        data: speech,
       }
     );
 
-    const text = response.data["data"].join(" ").trim();
+    const text = response.data["text"].trim();
 
     return new Response(text);
   } catch (e) {

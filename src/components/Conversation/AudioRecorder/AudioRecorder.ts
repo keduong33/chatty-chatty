@@ -39,6 +39,7 @@ export class AudioRecorder {
     const blob = new Blob(this.recordedChunks, { type: "audio/wav" });
     this.preview = URL.createObjectURL(blob);
     this.speech = await blobToBase64(blob);
+    this.speech = this.speech.substring("data:audio/wav;base64,".length);
     this.recordedChunks = []; //reset temporary chunks
   }
 
